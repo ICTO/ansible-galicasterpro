@@ -1,2 +1,15 @@
 ---
-# tasks file for roles/galicasterpro/
+- apt: name=curl state=present
+
+- command: dpkg-query -l galicasterpro
+  register: dpkg_query
+  ignore_errors: True
+
+- get_url: url="https://repo.teltek.es/install" dest="/home/{{ ansible_user }}/install_galicasterpro.sh" mode=0755
+  when: dpkg_query.stderr.find('No packages found') != -1
+
+- command: ./install_galicasterpro.sh --install -u "{{ galicasterpro.repo.user }}" -p "{{ galicasterpro.repo.pass}}" --drivers N --kernel N
+  args:
+      chdir: /home/{{ ansible_user }}
+  when: dpkg_query.stderr.find('No packages found') != -1
+  failed_when: "'GCPRO - Checking applicance mode' not in command_result.stdout"
