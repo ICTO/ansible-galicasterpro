@@ -1,6 +1,8 @@
 ---
 - apt: name=curl state=present
 
+- pip: name=pexpect version=3.3
+
 - command: dpkg-query -l galicasterpro
   register: dpkg_query
   ignore_errors: True
@@ -13,3 +15,12 @@
       chdir: /home/{{ ansible_user }}
   when: dpkg_query.stderr.find('No packages found') != -1
   failed_when: "'GCPRO - Checking applicance mode' not in command_result.stdout"
+
+- expect:
+    command: /bin/bash -c 'PYTHONPATH="$PYTHONPATH:/opt/teltek/galicasterpro/lib/python2.7/site-packages" /opt/teltek/gcpanel/gcpanel changepwd admin'
+    responses:
+        Password: "{{ galicasterpro.pass.default }}"
+        Confirm: "{{ galicasterpro.pass.default }}"
+        New Password: "{{ galicasterpro.pass.admin }}"
+        Confirm new Password: "{{ galicasterpro.pass.admin }}"
+    when: dpkg_query.stderr.find('No packages found') != -1
