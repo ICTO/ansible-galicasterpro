@@ -1,5 +1,14 @@
 ---
-- apt: name=curl state=present
+- apt: name={{ item }} state=present
+  with_items:
+    - curl
+    - python-pip
+
+- apt: name={{ item }} state=present install_recommends=yes
+  with_items:
+    - linux-generic-lts-trusty
+    - xserver-xorg-lts-trusty
+    - libgl1-mesa-glx-lts-trusty
 
 - pip: name=pexpect version=3.3
 
@@ -23,4 +32,4 @@
         Confirm: "{{ galicasterpro.pass.default }}"
         New Password: "{{ galicasterpro.pass.admin }}"
         Confirm new Password: "{{ galicasterpro.pass.admin }}"
-    when: dpkg_query.stderr.find('No packages found') != -1
+  when: dpkg_query.stderr.find('No packages found') != -1
