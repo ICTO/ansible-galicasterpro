@@ -23,7 +23,7 @@
   args:
       chdir: /home/{{ ansible_user }}
   when: dpkg_query.stderr.find('No packages found') != -1
-  failed_when: "'GCPRO - Checking applicance mode' not in command_result.stdout"
+  failed_when: "'GCPRO - Checking applicance mode' not in command_result.stderr"
 
 - expect:
     command: /bin/bash -c 'PYTHONPATH="$PYTHONPATH:/opt/teltek/galicasterpro/lib/python2.7/site-packages" /opt/teltek/gcpanel/gcpanel changepwd admin'
