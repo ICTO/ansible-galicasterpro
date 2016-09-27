@@ -33,3 +33,8 @@
         New Password: "{{ galicasterpro.pass.admin }}"
         Confirm new Password: "{{ galicasterpro.pass.admin }}"
   when: dpkg_query.stderr.find('No packages found') != -1
+
+# Open port 10050 for zabbix
+- ufw: rule=allow port=10050
+  tags:
+    - ufw
